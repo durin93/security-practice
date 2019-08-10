@@ -1,12 +1,15 @@
 package me.gram.springsecuritypractice.form;
 
 import java.security.Principal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class SampleController {
+
+    @Autowired SampleService sampleService;
 
     @GetMapping("/info")
     public String info(Model model){
@@ -16,6 +19,7 @@ public class SampleController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal){
+        sampleService.dashboard();
         model.addAttribute("message","Hello " + principal.getName());
         return "dashboard";
     }
