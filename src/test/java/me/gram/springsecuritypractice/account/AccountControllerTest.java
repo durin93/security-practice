@@ -1,6 +1,8 @@
 package me.gram.springsecuritypractice.account;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -21,6 +24,9 @@ public class AccountControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    AccountService accountService;
 
     @Test
     @WithAnonymousUser
@@ -41,7 +47,7 @@ public class AccountControllerTest {
     @Test
     @WithUser
     public void admin_user() throws Exception {
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/admin"))
             .andDo(print())
             .andExpect(status().isForbidden());
     }
@@ -54,14 +60,33 @@ public class AccountControllerTest {
             .andExpect(status().isOk());
     }
 
-  /*  private ResultActions adminRolePerform(String url) throws Exception {
-        return mockMvc.perform(get(url).with(user("durin").roles("ADMIN"))); //mocking~
+    @Test
+    @Transactional
+    public void login() throws Exception {
+        String username = "durin";
+        String password = "123";
+        Account account = createAccount(username,password);
+        mockMvc.perform(formLogin().user(account.getUsername()).password(password))
+            .andExpect(authenticated());
     }
 
-    private ResultActions userRolePerform(String url) throws Exception {
-        return mockMvc.perform(get(url).with(user("durin").roles("USER"))); //mocking~
-    }*/
+    @Test
+    @Transactional
+    public void login_fail() throws Exception {
+        String username = "durin";
+        String password = "123";
+        Account account = createAccount(username,password);
+        mockMvc.perform(formLogin().user(account.getUsername()).password("asdasd"))
+            .andExpect(unauthenticated());
+    }
 
-
+    private Account createAccount(String username, String password){
+        Account account = new Account();
+        account.setUsername(username);
+        account.setPassword(password);
+        account.setRole("USER");
+        accountService.createNew(account);
+        return account;
+    }
 
 }
