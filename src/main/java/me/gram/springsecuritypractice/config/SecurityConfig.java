@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import me.gram.springsecuritypractice.account.AccountService;
+import me.gram.springsecuritypractice.common.LoggingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -96,6 +98,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .key("remember-me-sample");
 
 
+//        http.addFilter() //아무 파라미터가 없으면 맨 뒤에 추가된다.
+        http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class); //제일앞필터
 
         //기본이 스레드로컬이라서 동일한 스레드로컬에서만공유
         //현재 스레드에서 하위 스레드로 생성하는 스레드에도 콘텍스트공유한다
