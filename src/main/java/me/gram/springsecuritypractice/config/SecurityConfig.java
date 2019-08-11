@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
@@ -50,6 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .expressionHandler(expressionHandler());
         http.formLogin();
         http.httpBasic();
+
+        //기본이 스레드로컬이라서 동일한 스레드로컬에서만공유
+
+        //현재 스레드에서 하위 스레드로 생성하는 스레드에도 콘텍스트공유한다
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
 

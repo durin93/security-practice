@@ -3,6 +3,8 @@ package me.gram.springsecuritypractice.form;
 import java.util.Collection;
 import me.gram.springsecuritypractice.account.Account;
 import me.gram.springsecuritypractice.account.AccountContext;
+import me.gram.springsecuritypractice.common.SecurityLogger;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,4 +24,14 @@ public class SampleService {
     }
 
 
+
+    //새로운 스레드다
+    //Async를 사용한곳에서는 시큐리티컨텍스트 공유가안됨.
+    //이걸 해결하려면
+    @Async
+    public void asyncService() {
+        SecurityLogger.log("Async Service");
+        System.out.println("Asyn service called");
+
+    }
 }

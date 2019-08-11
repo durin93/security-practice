@@ -3,10 +3,12 @@ package me.gram.springsecuritypractice.form;
 import java.security.Principal;
 import me.gram.springsecuritypractice.account.AccountContext;
 import me.gram.springsecuritypractice.account.AccountRepository;
+import me.gram.springsecuritypractice.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class SampleController {
@@ -51,6 +53,15 @@ public class SampleController {
             model.addAttribute("message", "Hello "+principal.getName());
         }
         return "index";
+    }
+
+    @GetMapping("/async-service")
+    @ResponseBody
+    public String asyncService(){
+        SecurityLogger.log("Mvc, before async service");
+        sampleService.asyncService();
+        SecurityLogger.log("Mvc, after async service");
+        return "Async Serivce";
     }
 
 }
