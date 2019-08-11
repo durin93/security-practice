@@ -52,8 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin();
         http.httpBasic();
 
-        //기본이 스레드로컬이라서 동일한 스레드로컬에서만공유
+        //로그아웃관련
+        http.logout().logoutUrl("/logout").logoutSuccessUrl("/");
 
+        //기본이 스레드로컬이라서 동일한 스레드로컬에서만공유
         //현재 스레드에서 하위 스레드로 생성하는 스레드에도 콘텍스트공유한다
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
