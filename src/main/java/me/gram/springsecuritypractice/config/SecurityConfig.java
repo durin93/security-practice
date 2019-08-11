@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .mvcMatchers("/","/info", "/account/**").permitAll()
+            .mvcMatchers("/","/info", "/account/**", "/signup").permitAll()
             .mvcMatchers("/admin").hasRole("ADMIN")
             .mvcMatchers("/user").hasRole("USER")
 //            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() 이렇게 하는거보단 따로 시큐리티 적용제외하는방법을 추천한다.
