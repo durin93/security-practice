@@ -1,10 +1,16 @@
 package me.gram.springsecuritypractice.form;
 
 import java.security.Principal;
+import me.gram.springsecuritypractice.account.Account;
 import me.gram.springsecuritypractice.account.AccountContext;
 import me.gram.springsecuritypractice.account.AccountRepository;
+import me.gram.springsecuritypractice.account.UserAccount;
+import me.gram.springsecuritypractice.book.BookRepository;
+import me.gram.springsecuritypractice.common.CurrentUser;
 import me.gram.springsecuritypractice.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +23,9 @@ public class SampleController {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    BookRepository bookRepository;
 
     @GetMapping("/info")
     public String info(Model model){
@@ -41,16 +50,19 @@ public class SampleController {
     @GetMapping("/user")
     public String user(Model model, Principal principal){
         model.addAttribute("message","Hello user "+ principal.getName());
+        model.addAttribute("books",bookRepository.findCurrentUserBooks());
         return "user";
     }
 
     @GetMapping("/")
-    public String index(Model model, Principal principal){
-        if(principal == null){
+    public String index(Model model, @CurrentUser Account account){
+//    public String index(Model model, @AuthenticationPrincipal UserAccount userAccount){
+//    public String index(Model model, Principal principal){
+        if(account == null){
             model.addAttribute("message","Hello Spring Security");
         }
         else {
-            model.addAttribute("message", "Hello "+principal.getName());
+            model.addAttribute("message", "Hello "+account.getUsername());
         }
         return "index";
     }

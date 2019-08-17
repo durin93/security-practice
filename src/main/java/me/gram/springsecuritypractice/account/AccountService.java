@@ -23,12 +23,14 @@ public class AccountService implements UserDetailsService {
         if(account == null){
             throw new UsernameNotFoundException(username);
         }
-        return User.builder()
+
+        return new UserAccount(account);
+        /*return User.builder()
             .username(account.getUsername())
             .password(account.getPassword())
             .roles(account.getRole())
 //            .roles(account.getRole(),"USER")
-            .build();
+            .build();*/
     }
 
     public Account createNew(Account account) {
